@@ -18,12 +18,14 @@ var host string
 var port int
 var user string
 var pass string
+var tls bool
 
 func init() {
-	cmd.Flags().StringVarP(&host, "host", "", "127.0.0.1", "Host")
-	cmd.Flags().IntVarP(&port, "port", "", 5672, "Port")
+	cmd.Flags().StringVar(&host, "host", "127.0.0.1", "Host")
+	cmd.Flags().IntVar(&port, "port", 5672, "Port")
 	cmd.Flags().StringVarP(&user, "user", "u", "", "Username")
 	cmd.Flags().StringVarP(&pass, "pass", "p", "", "Password")
+	cmd.Flags().BoolVar(&tls, "tls", false, "Password")
 }
 
 func main() {
@@ -41,7 +43,12 @@ func run(cmd *cobra.Command, args []string) error {
 
 	log.Println("Checking connection to", addr)
 
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s@%s/", auth, addr))
+	protocol := "amqp"
+	if tls {
+		protocol = "amqps"
+	}
+
+	conn, err := amqp.Dial(fmt.Sprintf("%s://%s@%s/", protocol, auth, addr))
 	failOnError(err, "Failed to connect")
 	defer conn.Close()
 

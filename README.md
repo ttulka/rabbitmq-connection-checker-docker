@@ -16,3 +16,8 @@ docker run --rm --network host ttulka/rabbitmq-connection-checker -u user -p pas
 # with host and port, no auth
 docker run --rm --network host ttulka/rabbitmq-connection-checker --host 10.0.0.1 --port 15672
 ```
+
+```sh
+# with TLS enabled, no auth
+docker run --rm --network host ttulka/rabbitmq-connection-checker --tls
+```
